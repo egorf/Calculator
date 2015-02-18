@@ -11,8 +11,11 @@ import UIKit
 class ViewController: UIViewController
 {
     @IBOutlet weak var display: UILabel!
+    
+    var brain = CalculatorBrain()
+    
     var userIsInTheMiddleOfTypingANumber = false // Bool inferred
-    var operandStack = Array<Double>() // Array<Double> inferred
+    
     // always have the label value converted to Double and put to the variable
     var displayValue: Double
     {
@@ -43,57 +46,29 @@ class ViewController: UIViewController
     @IBAction func enter()
     {
         userIsInTheMiddleOfTypingANumber = false
-        operandStack.append(displayValue)
-        println("operandStack = \(operandStack)")
+        if let result = brain.pushOperand(displayValue)
+        {
+            displayValue = result
+        } else {
+            displayValue = 0 // broken result
+        }
     }
+    
     @IBAction func operate(sender: UIButton)
     {
-        let operation = sender.currentTitle!
-        
         if userIsInTheMiddleOfTypingANumber
         {
             enter()
         }
         
-        switch operation
+        if let operation = sender.currentTitle
         {
-        case "×":
-            performOperation({ (op1, op2) in return op1*op2 }) // operation args inferred by performOperation declaration
-
-        case "÷":
-            performOperation({ (op1, op2) in op1 / op2 })
-
-        case "+":
-            performOperation({ $0 + $1 })
-        
-        case "-":
-            performOperation() { $0 - $1 }
-            
-        case "√":
-            performOperation { sqrt($0) }
-
-        default:
-            break
-
-        }
-        
-    }
-    
-    func performOperation(operation: (Double, Double) -> Double)
-    {
-        if operandStack.count >= 2
-        {
-            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
-            enter()
-        }
-    }
-    
-    func performOperation(operation: (Double) -> Double)
-    {
-        if operandStack.count >= 1
-        {
-            displayValue = operation(operandStack.removeLast())
-            enter()
+            if let result = brain.performOperation(operation)
+            {
+                displayValue = result
+            } else {
+                displayValue = 0 // broken result should be error message
+            }
         }
     }
 }
