@@ -31,7 +31,23 @@ class ViewController: UIViewController
     
     @IBAction func appendDigit(sender: UIButton)
     {
-        let digit = (sender.currentTitle! == "•") ? "." : sender.currentTitle!
+        let pressedButton = sender.currentTitle!
+        var digit: String
+        var needEnterFlag: Bool = false
+        
+        switch pressedButton
+        {
+            case "•":
+                digit = "."
+            
+            case "π":
+                digit = "\(M_PI)"
+                needEnterFlag = true
+            
+            default:
+                digit = pressedButton
+        }
+
         let thisDigitContainsFloatingPoint = digit.rangeOfString(".") != nil
         
         println("Button pressed \(digit)")
@@ -50,10 +66,15 @@ class ViewController: UIViewController
         }
         
         // check if we used a point in the number
-        if digit.rangeOfString(".") != nil
+        if thisDigitContainsFloatingPoint
         {
             floatingPointUsed = true
             println("The pressed button contains a point!")
+        }
+        
+        if needEnterFlag
+        {
+            enter()
         }
     }
     
@@ -86,6 +107,15 @@ class ViewController: UIViewController
             }
         }
     }
+    
+    // let's clear the stack and the result
+    @IBAction func clear(sender: UIButton)
+    {
+        displayValue = 0.0
+        brain.clear()
+    }
+    
+    
 }
 
 

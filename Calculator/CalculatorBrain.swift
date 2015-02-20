@@ -55,7 +55,8 @@ class CalculatorBrain
         
         // knownOps["√"] = Op.UnaryOperation("√") { sqrt($0) } // same thing:
         knownOps["√"] = Op.UnaryOperation("√", sqrt)
-
+        learnOp(Op.UnaryOperation("sin", sin))
+        learnOp(Op.UnaryOperation("cos", cos))
     }
     
     // all parameters except class instances are passed by value with an implicit let
@@ -117,4 +118,9 @@ class CalculatorBrain
         return evaluate()
     }
     
+    func clear()
+    {
+        opStack = [Op]()
+        println("OpStack array cleared\nnew value is \(opStack)")
+    }
 }
