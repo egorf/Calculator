@@ -15,6 +15,7 @@ class ViewController: UIViewController
     var brain = CalculatorBrain()
     
     var userIsInTheMiddleOfTypingANumber = false // Bool inferred
+    var floatingPointUsed = false
     
     // always have the label value converted to Double and put to the variable
     var displayValue: Double
@@ -28,24 +29,38 @@ class ViewController: UIViewController
         }
     }
     
-    
     @IBAction func appendDigit(sender: UIButton)
     {
-        let digit = sender.currentTitle!
+        let digit = (sender.currentTitle! == "•") ? "." : sender.currentTitle!
+        let thisDigitContainsFloatingPoint = digit.rangeOfString(".") != nil
+        
+        println("Button pressed \(digit)")
         
         if userIsInTheMiddleOfTypingANumber
         {
             // crashes if display.text == nil
-            display.text = display.text! + digit
+            if !floatingPointUsed || !thisDigitContainsFloatingPoint
+            {
+                println("FlP_used \(floatingPointUsed), thisDigitContainsPoint \(thisDigitContainsFloatingPoint)")
+                display.text = display.text! + digit
+            }
         } else {
             display.text = digit;
             userIsInTheMiddleOfTypingANumber = true
+        }
+        
+        // check if we used a point in the number
+        if digit.rangeOfString(".") != nil
+        {
+            floatingPointUsed = true
+            println("The pressed button contains a point!")
         }
     }
     
     @IBAction func enter()
     {
         userIsInTheMiddleOfTypingANumber = false
+        floatingPointUsed = false
         if let result = brain.pushOperand(displayValue)
         {
             displayValue = result
