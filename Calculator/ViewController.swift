@@ -114,8 +114,6 @@ class ViewController: UIViewController
         displayValue = 0.0
         brain.clear()
     }
-    
-    
 }
 
 
